@@ -13,6 +13,6 @@ public class DriveTrainOpMode extends LinearOpMode {
     private DcMotor motorTest;
     private Servo servoTest;
     public void runOpMode() throws InterruptedException {
-
+    motorTest=hardwareMap.get(DcMotor.class, motorTest);
     }
 }

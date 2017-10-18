@@ -4,5 +4,5 @@
 
 public class MyFirstJavaClassOpMode {
 
-
+/**Test comment*/
 }
