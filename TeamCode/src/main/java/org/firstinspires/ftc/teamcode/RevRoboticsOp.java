@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
@@ -19,41 +20,45 @@ public class RevRoboticsOp extends OpMode {
     DcMotor frontLeft, frontRight, backLeft, backRight, liftMotor;
     ColorSensor colorSensor;
     float red, green, blue;
-    CRServo leftGrab,rightGrab;
+    Servo leftGrab,rightGrab;
     Servo jewelKnocker;
     float Lt,Rt;
-    final double RIGHT_OPEN_POWER = 1.0;
-    final double RIGHT_CLOSE_POWER = -1.0;
-    final double LEFT_OPEN_POWER = -1.0;
-    final double LEFT_CLOSE_POWER = 1.0;
-    final double NEUTRAL = 0.0;
+
+    final double RIGHT_OPEN = 1.0;
+    final double RIGHT_CLOSE = 0.4;
+    final double LEFT_OPEN = 0;
+    final double LEFT_CLOSE = 0.6;
 
     public void init() {
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
+        liftMotor = hardwareMap.dcMotor.get("liftMotor");
 
         colorSensor = hardwareMap.colorSensor.get("color");
         jewelKnocker = hardwareMap.servo.get("jewel");
-        jewelKnocker.setPosition(0.1);
+        jewelKnocker.setPosition(1.0);
 
-        liftMotor = frontLeft;
-
-        rightGrab = hardwareMap.crservo.get("rightGrab");
-        leftGrab = hardwareMap.crservo.get("leftGrab");
-        rightGrab.setPower(NEUTRAL);
-        leftGrab.setPower(NEUTRAL);
+        rightGrab = hardwareMap.servo.get("rightGrab");
+        leftGrab = hardwareMap.servo.get("leftGrab");
+        rightGrab.setPosition(RIGHT_OPEN);
+        leftGrab.setPosition(LEFT_OPEN);
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
+        liftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void loop () {
 
@@ -66,15 +71,16 @@ public class RevRoboticsOp extends OpMode {
         */
 
 
-        frontLeft.setPower(gamepad1.left_stick_y-gamepad1.left_stick_x+gamepad1.right_stick_x);
-        frontRight.setPower(gamepad1.right_stick_y+gamepad1.right_stick_x-gamepad1.right_stick_x);
-        backLeft.setPower(gamepad1.left_stick_y+gamepad1.left_stick_x-gamepad1.right_stick_x);
-        backRight.setPower(gamepad1.right_stick_y-gamepad1.right_stick_x+gamepad1.right_stick_x);
-
+        frontLeft.setPower(-gamepad1.left_stick_y+gamepad1.left_stick_x+gamepad1.right_stick_x);
+        frontRight.setPower(-gamepad1.left_stick_y-gamepad1.left_stick_x-gamepad1.right_stick_x);
+        backLeft.setPower(-gamepad1.left_stick_y-gamepad1.left_stick_x+gamepad1.right_stick_x);
+        backRight.setPower(-gamepad1.left_stick_y+gamepad1.left_stick_x-gamepad1.right_stick_x);
 
         telemetry.addData("Red: ", red);
         telemetry.addData("Green: ", green);
         telemetry.addData("Blue: ", blue);
+        telemetry.addData("Front Left:", gamepad1.left_stick_y-gamepad1.left_stick_x-gamepad1.right_stick_x);
+        telemetry.addData("Back Right:", gamepad1.left_stick_y-gamepad1.left_stick_x+gamepad1.right_stick_x);
         telemetry.update();
 
         // trivial change
@@ -86,91 +92,29 @@ public class RevRoboticsOp extends OpMode {
         }
 
 
-        /*
-        Lt = gamepad1.left_trigger;
-        //Left trigger actions
-        if (gamepad1.left_trigger == 1.0) {
-            leftGrab.setPosition(1.0);
-        }
-        else {
-            leftGrab.setPosition(0.5);
-        }
-
-        //Left bumper actions
-        if (gamepad1.left_bumper)  {
-            leftGrab.setPosition(-1.0);
-        }
-        else {
-            leftGrab.setPosition(0.5);
-        }
-
-        //Right trigger actions
-        if (gamepad1.right_trigger == 1.0) {
-            rightGrab.setPosition(0);
-        }
-        else {
-            rightGrab.setPosition(0.5);
-        }
-
-        //Right bumper actions
-        if (gamepad1.right_bumper) {
-            rightGrab.setPosition(1.0);
-        }
-        else {
-            rightGrab.setPosition(0.5);
-        }
-
-        rightGrab.setPosition(0.5);
-
-        //Lift motor actions
-        if (gamepad1.dpad_up) {
-            liftMotor.setPower(0.5);
-        }
-        else {
-            liftMotor.setPower(0);
-        }
-
-        if (gamepad1.dpad_down) {
-            liftMotor.setPower(-0.5);
-        }
-        else {
-            liftMotor.setPower(0);
-        }
-
-       */
-
-        if (gamepad1.right_trigger == 1.0) {
-            rightGrab.setPower(RIGHT_OPEN_POWER);
-            leftGrab.setPower(LEFT_OPEN_POWER);
-        }
-        else {
-            rightGrab.setPower(NEUTRAL);
-            leftGrab.setPower(NEUTRAL);
-        }
-
-        if (gamepad1.left_trigger == 1.0) {
-            rightGrab.setPower(RIGHT_CLOSE_POWER);
-            leftGrab.setPower(LEFT_CLOSE_POWER);
-        }
-        else {
-            rightGrab.setPower(NEUTRAL);
-            leftGrab.setPower(NEUTRAL);
-        }
-
+        // trivial change
         if (gamepad1.dpad_up) {
             liftMotor.setPower(1.0);
         }
-        else {
-            liftMotor.setPower(0);
-        }
-
-        if (gamepad1.dpad_down) {
-            liftMotor.setPower(0);
+        else if (gamepad1.dpad_down) {
+            liftMotor.setPower(-1.0);
         }
         else {
             liftMotor.setPower(0);
         }
 
+
+        if (gamepad1.left_bumper) {
+            rightGrab.setPosition(RIGHT_OPEN);
+            leftGrab.setPosition(LEFT_OPEN);
+        }
+
+        if (gamepad1.right_bumper) {
+            rightGrab.setPosition(RIGHT_CLOSE);
+            leftGrab.setPosition(LEFT_CLOSE);
+        }
+
+        telemetry.update();
 
 
     }
