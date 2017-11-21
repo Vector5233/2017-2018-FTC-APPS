@@ -7,18 +7,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.Drive;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * Created by CCA on 10/26/2017.
@@ -66,10 +57,11 @@ public class RevAuto extends LinearOpMode {
         drive.DriveForwardDistance(0.5,12);
         sleep(5000);
         drive.DriveBackwardDistance(0.5,12);
-        sleep(5000);*/
+        sleep(5000);
         drive.TurnLeftDegree(0.5,90);
         sleep(5000);
-        drive.TurnRightDegree(0.5,90);
+        drive.TurnRightDegree(0.5,90);*/
+        drive.DeliverGlyph();
     }
 /*Time magic number: 1000 = 1 second*/
 
