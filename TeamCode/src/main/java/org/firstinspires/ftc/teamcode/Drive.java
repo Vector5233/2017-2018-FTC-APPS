@@ -16,7 +16,7 @@ public class Drive extends Object {
 
     final double SPROCKET_RATIO = 2.0/3.0;
     final double TICKS_PER_INCH = SPROCKET_RATIO*(1120.0/(2*2*3.14159));
-    final double ROBOT_RADIUS   = (90/103.25)*1.5*5.75;
+    final double ROBOT_RADIUS   = (135/103.25)*5.75;
 
     public Drive(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, ModernRoboticsI2cGyro G, LinearOpMode L) {
         frontLeft = FL;

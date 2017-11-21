@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class DeliverGlyph extends Object {
 
     Servo leftGrab, rightGrab
-    DcMotor frontLeft, frontRight, backLeft, backRight;liftMotor;
+    DcMotor frontLeft, frontRight, backLeft, backRight, liftMotor;
     LinearOpMode opmode;
     final double SPROCKET_RATIO = 2.0/3.0;
     final double TICKS_PER_INCH = SPROCKET_RATIO*(1120.0/(2*2*3.14159));
