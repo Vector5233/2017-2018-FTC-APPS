@@ -16,6 +16,7 @@ public class Drive extends Object {
 
     final double SPROCKET_RATIO = 2.0/3.0;
     final double TICKS_PER_INCH = SPROCKET_RATIO*(1120.0/(2*2*3.14159));
+    final double ROBOT_RADIUS = 5.75;
 
     public Drive(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, ModernRoboticsI2cGyro G, LinearOpMode L) {
         frontLeft = FL;
@@ -26,29 +27,66 @@ public class Drive extends Object {
         opmode = L;
     }
 
-    public void TurnLeftDegree(double power, double degree) {
-        double initial = gyro.getIntegratedZValue();
-        double target = initial + degree;
-        frontLeft.setPower(-power);
+    public void TurnLeftDegree(double power, double degrees) {
+
+        // distance in inches
+
+        int ticks = (int)((2*3.14159/360)*degrees*ROBOT_RADIUS*TICKS_PER_INCH);
+        if (power>0.65){power = 0.65;}
+
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setTargetPosition(-ticks);
+        frontRight.setTargetPosition(ticks);
+        backLeft.setTargetPosition(-ticks);
+        backRight.setTargetPosition(ticks);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(power);
         frontRight.setPower(power);
-        backLeft.setPower(-power);
+        backLeft.setPower(power);
         backRight.setPower(power);
-        while(opmode.opModeIsActive() && gyro.getIntegratedZValue() < target){
-            opmode.idle();
-        }
+
+        while (frontRight.isBusy() &&frontLeft.isBusy());
+
         StopDriving();
     }
 
-    public void TurnRightDegree(double power, double degree) {
-        double initial = gyro.getIntegratedZValue();
-        double target = initial - degree;
+    public void TurnRightDegree(double power, double degrees) {
+        // distance in inches
+
+        int ticks = (int)((2*3.14159/360)*degrees*ROBOT_RADIUS*TICKS_PER_INCH);
+        if (power>0.65){power = 0.65;}
+
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setTargetPosition(ticks);
+        frontRight.setTargetPosition(-ticks);
+        backLeft.setTargetPosition(ticks);
+        backRight.setTargetPosition(-ticks);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         frontLeft.setPower(power);
-        frontRight.setPower(-power);
+        frontRight.setPower(power);
         backLeft.setPower(power);
-        backRight.setPower(-power);
-        while (opmode.opModeIsActive() && gyro.getIntegratedZValue() > target) {
-            opmode.idle();
-        }
+        backRight.setPower(power);
+
+        while (frontRight.isBusy() &&frontLeft.isBusy());
+
         StopDriving();
     }
 
