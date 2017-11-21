@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode; /**
  */
 
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,40 +11,25 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.Drive;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 
-
 @Autonomous(name="RaymondAutonomousOpMode", group = "myGroup")
 public class RaymondAutonomousOpMode extends LinearOpMode {
-    Servo jewelKnocker=null;
-    DcMotor frontLeft, frontRight, backLeft, backRight=null;
-    ColorSensor jewelSensor=null;
-
-
+    Servo jewelKnocker = null;
+    DcMotor frontLeft, frontRight, backLeft, backRight = null;
+    ColorSensor colorSensor = null;
+    Drive drive;
     float red, green, blue;
-
-
-    public void runOpMode() throws InterruptedException {
-        initialize();
-        waitForStart();
-        jewelKnocker.setPosition(0.0);
-        if(jewelSensor.red() == 3) {
-            strafeRight(1,3);
-            strafeLeft(1,3);
-        }
-        else {
-            strafeLeft(1,3);
-            strafeRight(1,3);
-        }
-        jewelKnocker.setPosition(1.0);
-    }
-
+    ModernRoboticsI2cGyro gyro;
+    double JEWEL_UP = 0;
+    double JEWEL_DOWN = 0+0.091;
 
     public void initialize() {
-        jewelSensor = hardwareMap.colorSensor.get("color");
+        colorSensor = hardwareMap.colorSensor.get("color");
         jewelKnocker = hardwareMap.servo.get("jewel");
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
         frontRight = hardwareMap.dcMotor.get("frontRight");
@@ -55,24 +41,29 @@ public class RaymondAutonomousOpMode extends LinearOpMode {
         backLeft.setDirection(REVERSE);
         backRight.setDirection(FORWARD);
 
-        jewelKnocker.setPosition(1.0);
+        jewelKnocker.setPosition(JEWEL_UP);
 
-        Servo jewel=null;
-        DcMotor frontLeft, frontRight, backLeft, backRight=null;
-        ColorSensor jewelSensor=null;
+        drive = new Drive(frontLeft, frontRight, backLeft, backRight, gyro, this);
     }
-}
 
-public void strafeRight (double power,int distance){
+    public void runOpMode() throws InterruptedException {
+        initialize();
+        waitForStart();
+        jewelKnocker.setPosition(JEWEL_DOWN);
+        sleep(2000);
+        telemetry.addData("Red: ", colorSensor.red());
+        telemetry.addData("Blue: ", colorSensor.blue());
+        telemetry.update();
+        if (colorSensor.red() > colorSensor.blue()) {
+            drive.StrafeLeftDistance(0.3,6);
+            drive.StrafeRightDistance(0.3,6);
+        } else {
+            drive.StrafeRightDistance(0.3,6);
+            drive.StrafeLeftDistance(0.3,6);
+        }
+        jewelKnocker.setPosition(JEWEL_UP);
+    }
 
-    frontLeft.setPower(power,3);
-    frontRight.setPower(power,3);
-
-}
-
-public void strafeLeft (double power,int distance){
-    frontRight.setPower(power,);
-    frontLeft.setPower();
 }
 
 
