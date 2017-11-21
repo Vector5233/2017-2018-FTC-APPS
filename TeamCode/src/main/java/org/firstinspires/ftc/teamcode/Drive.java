@@ -1,135 +1,55 @@
 package org.firstinspires.ftc.teamcode;
 
-/**
- * Created by CCA on 10/27/2017.
- */
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.Drive;
-import java.util.concurrent.SynchronousQueue;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /**
- * Created by CCA on 10/26/2017.
+ * Created by CCA on 11/16/2017.
  */
-@Autonomous(name = "RevAuto")
 
-public class RevAuto extends LinearOpMode {
+public class Drive extends Object {
 
-    DcMotor frontLeft = null;
-    DcMotor liftMotor = null;
-    DcMotor frontRight = null;
-    DcMotor backLeft = null;
-    DcMotor backRight = null;
-    ColorSensor colorSensor = null;
-    float red, green, blue;
-    Servo leftGrab, rightGrab = null;
-    Servo jewelKnocker = null;
-    Drive drive;
+    DcMotor frontLeft, frontRight, backLeft, backRight;
+    ModernRoboticsI2cGyro gyro;
+    LinearOpMode opmode;
 
-    float Lt, Rt;
-    final double RIGHTGrab_OPEN = 1.0;
-    final double RIGHTGrab_CLOSE = 0.4; //used to be 0.46
-    final double LEFTGrab_OPEN = 0;
-    final double LEFTGrab_CLOSE = 0.6; //used to be 0.54
     final double SPROCKET_RATIO = 2.0/3.0;
     final double TICKS_PER_INCH = SPROCKET_RATIO*(1120.0/(2*2*3.14159));
 
-    double JEWEL_UP = 0;
-    double JEWEL_DOWN = 0+0.091;
-
-    double ForwardPower = 1.0;
-
-    ModernRoboticsI2cGyro gyro;
-
-    @Override
-    public void runOpMode() throws InterruptedException {
-
-        initialization();
-        waitForStart();
-        drive.StrafeLeftDistance(0.5,12);
-        sleep(5000);
-        drive.StrafeRightDistance(0.5,12);
-        sleep(5000);
-        drive.StopDriving(); //redundant
-        drive.DriveForwardDistance(0.5,12);
-        sleep(5000);
-        drive.DriveBackwardDistance(0.5,12);
-        sleep(5000);
-        drive.TurnLeftDegree(0.5,90);
-        sleep(5000);
-        drive.TurnRightDegree(0.5,90);
-    }
-/*Time magic number: 1000 = 1 second*/
-
-
-    public void initialization () {
-        frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontRight = hardwareMap.dcMotor.get("frontRight");
-        backLeft = hardwareMap.dcMotor.get("backLeft");
-        backRight = hardwareMap.dcMotor.get("backRight");
-        liftMotor = hardwareMap.dcMotor.get ("liftMotor");
-
-
-        colorSensor = hardwareMap.colorSensor.get("color");
-        jewelKnocker = hardwareMap.servo.get("jewel");
-        gyro=hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        //jewelKnocker.setPosition(jewelKnocker_Raised);
-        RaiseJewelKnocker();
-
-        rightGrab = hardwareMap.servo.get("rightGrab");
-        leftGrab = hardwareMap.servo.get("leftGrab");
-        rightGrab.setPosition(RIGHTGrab_OPEN);
-        leftGrab.setPosition(LEFTGrab_OPEN);
-
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        liftMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        gyro.calibrate();
-        while (opModeIsActive() && gyro.isCalibrating()) {
-            idle();
-        }
-
-        drive = new Drive(frontLeft,frontRight,backLeft,backRight, gyro, this);
-
-
-
+    public Drive(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, ModernRoboticsI2cGyro G, LinearOpMode L) {
+        frontLeft = FL;
+        backLeft = BL;
+        backRight = BR;
+        frontRight = FR;
+        gyro = G;
+        opmode = L;
     }
 
-   /* public void TurnLeftDegree(double power, double degree) throws InterruptedException {
-        double target = gyro.getIntegratedZValue() + degree;
+    public void TurnLeftDegree(double power, double degree) {
+        double initial = gyro.getIntegratedZValue();
+        double target = initial + degree;
         frontLeft.setPower(-power);
         frontRight.setPower(power);
         backLeft.setPower(-power);
         backRight.setPower(power);
-
+        while(opmode.opModeIsActive() && gyro.getIntegratedZValue() < target){
+            opmode.idle();
+        }
+        StopDriving();
     }
 
-    public void TurnRightDegree(double power, double degree) throws InterruptedException {
-
+    public void TurnRightDegree(double power, double degree) {
+        double initial = gyro.getIntegratedZValue();
+        double target = initial - degree;
         frontLeft.setPower(power);
         frontRight.setPower(-power);
         backLeft.setPower(power);
         backRight.setPower(-power);
+        while (opmode.opModeIsActive() && gyro.getIntegratedZValue() > target) {
+            opmode.idle();
+        }
+        StopDriving();
     }
 
     public void StrafeRightDistance(double power, double distance){
@@ -225,29 +145,7 @@ public class RevAuto extends LinearOpMode {
         StopDriving();
     }
 
-    public void DriveForwardAlternate(double power, double distance) {
-        int ticks = (int) (distance * TICKS_PER_INCH);
 
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while (frontLeft.getCurrentPosition() <= ticks  && opModeIsActive()) {
-            idle();
-        }
-
-        StopDriving();
-
-    }
 
     public void DriveBackwardDistance(double power, double distance) throws InterruptedException {
 // distance in inches
@@ -287,29 +185,4 @@ public class RevAuto extends LinearOpMode {
         backRight.setPower(0.0);
     }
 
-    public void DriveForward (double power) throws InterruptedException {
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-    }*/
-
-
-    public void LowerJewelKnocker(){
-
-        jewelKnocker.setPosition(JEWEL_DOWN);
-
-    }
-
-    public void RaiseJewelKnocker(){
-        jewelKnocker.setPosition(JEWEL_UP);
-
-    }
-
-
-
-
 }
-
-
