@@ -55,13 +55,14 @@ public class RaymondAutonomousOpMode extends LinearOpMode {
         telemetry.addData("Blue: ", colorSensor.blue());
         telemetry.update();
         if (colorSensor.red() > colorSensor.blue()) {
-            drive.StrafeLeftDistance(0.3,6);
-            drive.StrafeRightDistance(0.3,6);
+            drive.TurnRightDegree(0.3,21);
+            jewelKnocker.setPosition(JEWEL_UP);
+            drive.TurnLeftDegree(0.3,21);
         } else {
-            drive.StrafeRightDistance(0.3,6);
-            drive.StrafeLeftDistance(0.3,6);
+            drive.TurnLeftDegree(0.3,21);
+            jewelKnocker.setPosition(JEWEL_UP);
+            drive.TurnRightDegree(0.3,21);
         }
-        jewelKnocker.setPosition(JEWEL_UP);
     }
 
 }

@@ -58,7 +58,7 @@ public class RevAuto extends LinearOpMode {
 
         initialization();
         waitForStart();
-        drive.StrafeLeftDistance(0.5,12);
+        /*drive.StrafeLeftDistance(0.5,12);
         sleep(5000);
         drive.StrafeRightDistance(0.5,12);
         sleep(5000);
@@ -66,7 +66,7 @@ public class RevAuto extends LinearOpMode {
         drive.DriveForwardDistance(0.5,12);
         sleep(5000);
         drive.DriveBackwardDistance(0.5,12);
-        sleep(5000);
+        sleep(5000);*/
         drive.TurnLeftDegree(0.5,90);
         sleep(5000);
         drive.TurnRightDegree(0.5,90);
