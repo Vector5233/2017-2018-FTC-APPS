@@ -52,7 +52,6 @@ public class BlueLeft extends LinearOpMode {
     DcMotor frontLeft, frontRight, backLeft, backRight, liftMotor;
     Servo jewelKnocker, leftGrab, rightGrab;
     ModernRoboticsI2cGyro gyro;
-    LinearOpMode opmode;
     ColorSensor colorSensor;
     float red, green, blue;
     Drive drive;
