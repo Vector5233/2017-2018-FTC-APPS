@@ -17,7 +17,6 @@ import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 
-@Autonomous(name="RaymondAutonomousOpMode", group = "myGroup")
 public class RaymondAutonomousOpMode extends Object {
     Servo jewelKnocker, leftGrab, rightGrab;
     DcMotor frontLeft, frontRight, backLeft, backRight;
@@ -35,19 +34,19 @@ public class RaymondAutonomousOpMode extends Object {
         opmode = L;
     }
     public void JewelKnocker(){
-        RaiseJewelKnocker();
+        LowerJewelKnocker();
         opmode.sleep(2000);
         opmode.telemetry.addData("Red: ", colorSensor.red());
         opmode.telemetry.addData("Blue: ", colorSensor.blue());
         opmode.telemetry.update();
         if (colorSensor.red() > colorSensor.blue()) {
             drive.TurnRightDegree(0.3,21);
-            LowerJewelKnocker();
             drive.TurnLeftDegree(0.3,21);
+            RaiseJewelKnocker();
         } else {
             drive.TurnLeftDegree(0.3,21);
-            LowerJewelKnocker();
             drive.TurnRightDegree(0.3,21);
+            RaiseJewelKnocker();
         }
     }
 
