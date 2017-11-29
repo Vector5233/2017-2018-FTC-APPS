@@ -22,9 +22,10 @@ public class Drive extends Object {
     final double SPROCKET_RATIO = 2.0/3.0;
     final double TICKS_PER_INCH = SPROCKET_RATIO*(1120.0/(2*2*3.14159));
     final double ROBOT_RADIUS   = (135/103.25)*5.75;
-    final double RIGHTGrab_OPEN = 1.0;
+
+    final double RIGHTGrab_OPEN = 0.8;
     final double RIGHTGrab_CLOSE = 0.4; //used to be 0.46
-    final double LEFTGrab_OPEN = 0;
+    final double LEFTGrab_OPEN = 0.2;
     final double LEFTGrab_CLOSE = 0.6; //used to be 0.54
 
     public Drive(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, ModernRoboticsI2cGyro G, Servo LG, Servo RG, LinearOpMode L) {

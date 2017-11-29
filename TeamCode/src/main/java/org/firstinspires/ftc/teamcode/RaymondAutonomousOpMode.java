@@ -24,8 +24,9 @@ public class RaymondAutonomousOpMode extends Object {
     Drive drive;
     LinearOpMode opmode;
     float red, green, blue;
-    double JEWEL_UP = 0;
-    double JEWEL_DOWN = 0+0.091;
+
+    final double JEWEL_UP = 0;
+    final double JEWEL_DOWN = 0+0.091;
 
     public RaymondAutonomousOpMode (Drive D, Servo JK, ColorSensor CS, LinearOpMode L) {
         drive = D;

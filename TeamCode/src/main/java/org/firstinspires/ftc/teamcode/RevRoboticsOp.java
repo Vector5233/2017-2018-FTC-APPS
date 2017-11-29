@@ -29,10 +29,11 @@ public class RevRoboticsOp extends OpMode {
     ModernRoboticsI2cGyro gyro;
     float Lt,Rt;
 
-    final double RIGHT_OPEN = 1.0;
-    final double RIGHT_CLOSE = 0.4;
-    final double LEFT_OPEN = 0;
-    final double LEFT_CLOSE = 0.6;
+    final double RIGHTGrab_OPEN = 0.8;
+    final double RIGHTGrab_CLOSE = 0.4; //used to be 0.46
+    final double LEFTGrab_OPEN = 0.2;
+    final double LEFTGrab_CLOSE = 0.6; //used to be 0.54
+
     final double JEWEL_UP = 0;
     final double JEWEL_DOWN = 0+0.091; //new number: 0.222
 
@@ -50,8 +51,8 @@ public class RevRoboticsOp extends OpMode {
 
         rightGrab = hardwareMap.servo.get("rightGrab");
         leftGrab = hardwareMap.servo.get("leftGrab");
-        rightGrab.setPosition(RIGHT_OPEN);
-        leftGrab.setPosition(LEFT_OPEN);
+        rightGrab.setPosition(RIGHTGrab_OPEN);
+        leftGrab.setPosition(LEFTGrab_OPEN);
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
@@ -115,13 +116,13 @@ public class RevRoboticsOp extends OpMode {
 
 
         if (gamepad2.left_bumper) {
-            rightGrab.setPosition(RIGHT_OPEN);
-            leftGrab.setPosition(LEFT_OPEN);
+            rightGrab.setPosition(RIGHTGrab_OPEN);
+            leftGrab.setPosition(LEFTGrab_OPEN);
         }
 
         if (gamepad2.right_bumper) {
-            rightGrab.setPosition(RIGHT_CLOSE);
-            leftGrab.setPosition(LEFT_CLOSE);
+            rightGrab.setPosition(RIGHTGrab_CLOSE);
+            leftGrab.setPosition(LEFTGrab_CLOSE);
         }
 
         telemetry.update();
