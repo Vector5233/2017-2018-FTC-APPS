@@ -41,7 +41,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.teamcode.Drive;
 @Autonomous(name="RedRight", group ="Concept")
 
 public class RedRight extends LinearOpMode {
@@ -78,71 +77,53 @@ public class RedRight extends LinearOpMode {
     VuforiaLocalizer vuforia;
 
     @Override public void runOpMode() {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = "ASC4bMD/////AAAAGQo793RFLUVDpV1hb5ufNBh/AXAtpjorAyvu24vcZ2AdlmilEYdD61K3xjN4XxdZmMc6NVCEdYQsF1bQxSyFUeUQ/ZzBvYYZnq4JTuLnGXGm1zhjNgRwNE0hWWY0IhipNoz+2ZUjGzWOxGq4hBB8LsVvQnaQR0Z/09iQ9p9zQ9eOD85Com5dXlxef6whuD/BRXyZSBeibi/zel9RKT9VCcCIsn7i0h62cApztPMq6NzBDFibiNsWDVoE83nw5utIPOGY4MsAyPHh27AhThKp83FAvlBE/RCDSrgUYRg2TOOFEu3uG7DVKjHrngLSRccN5eorXXVG7PdPoiHWTpSyVMaQSu/boDk6XgjgxwqGU/tB";
-
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-
-        telemetry.addData(">", "Press Play to start");
-        telemetry.update();
         initialization();
         waitForStart();
 
-        relicTrackables.activate();
+        RelicRecoveryVuMark vuMark = ReadPictograph();
 
-        while (opModeIsActive()) {
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            switch (vuMark){
-                case LEFT: {
-                    drive.DriveForwardDistance(0.5,19);
-                    drive. TurnRightDegree(0.5,90);
-                    drive.DriveForwardDistance(0.5,24);
-                    drive.StrafeRightDistance(0.5,19);
-                    drive.DriveForwardDistance(0.5,12);
-                    //DeliverGlyph();
-                    break;
-                }
-                case RIGHT: {
-                    drive.DriveForwardDistance(0.5,19);
-                    drive.TurnRightDegree(0.5,90);
-                    drive. DriveForwardDistance(0.5,24);
-                    drive.  StrafeRightDistance(0.5,5);
-                    drive.  DriveForwardDistance(0.5,12);
-                   // DeliverGlyph();
-                    break;
-                }
-                case CENTER: {
-                    drive. DriveForwardDistance(0.5,19);
-                    drive. TurnRightDegree(0.5,90);
-                    drive. DriveForwardDistance(0.5,24);
-                    drive. StrafeRightDistance(0.5,12);
-                    drive. DriveForwardDistance(0.5,12);
-                   // DeliverGlyph();
-                    break;
-                }
-                default:{
-                    drive.DriveForwardDistance(0.5,19);
-                    drive.TurnRightDegree(0.5,90);
-                    drive. DriveForwardDistance(0.5,24);
-                    drive. StrafeRightDistance(0.5,12);
-                    drive. DriveForwardDistance(0.5,12);
-                    //DeliverGlyph();
-                    break;
-                }
-
+        switch (vuMark){
+            case LEFT: {
+                drive.DriveForwardDistance(0.5,19);
+                drive. TurnRightDegree(0.5,90);
+                drive.DriveForwardDistance(0.5,24);
+                drive.StrafeRightDistance(0.5,19);
+                drive.DriveForwardDistance(0.5,12);
+                //DeliverGlyph();
+                break;
             }
+            case RIGHT: {
+                drive.DriveForwardDistance(0.5,19);
+                drive.TurnRightDegree(0.5,90);
+                drive. DriveForwardDistance(0.5,24);
+                drive.  StrafeRightDistance(0.5,5);
+                drive.  DriveForwardDistance(0.5,12);
+               // DeliverGlyph();
+                break;
+            }
+            case CENTER: {
+                drive. DriveForwardDistance(0.5,19);
+                drive. TurnRightDegree(0.5,90);
+                drive. DriveForwardDistance(0.5,24);
+                drive. StrafeRightDistance(0.5,12);
+                drive. DriveForwardDistance(0.5,12);
+               // DeliverGlyph();
+                break;
+            }
+            default:{
+                drive.DriveForwardDistance(0.5,19);
+                drive.TurnRightDegree(0.5,90);
+                drive. DriveForwardDistance(0.5,24);
+                drive. StrafeRightDistance(0.5,12);
+                drive. DriveForwardDistance(0.5,12);
+                //DeliverGlyph();
+                break;
+            }
+
         }
     }
+
 
     public void initialization () {
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
@@ -175,4 +156,45 @@ public class RedRight extends LinearOpMode {
 
         drive = new Drive(frontLeft,frontRight,backLeft,backRight, gyro, this);
     }
+
+
+
+    public RelicRecoveryVuMark ReadPictograph(){
+        RelicRecoveryVuMark picto;
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "ASC4bMD/////AAAAGQo793RFLUVDpV1hb5ufNBh/AXAtpjorAyvu24vcZ2AdlmilEYdD61K3xjN4XxdZmMc6NVCEdYQsF1bQxSyFUeUQ/ZzBvYYZnq4JTuLnGXGm1zhjNgRwNE0hWWY0IhipNoz+2ZUjGzWOxGq4hBB8LsVvQnaQR0Z/09iQ9p9zQ9eOD85Com5dXlxef6whuD/BRXyZSBeibi/zel9RKT9VCcCIsn7i0h62cApztPMq6NzBDFibiNsWDVoE83nw5utIPOGY4MsAyPHh27AhThKp83FAvlBE/RCDSrgUYRg2TOOFEu3uG7DVKjHrngLSRccN5eorXXVG7PdPoiHWTpSyVMaQSu/boDk6XgjgxwqGU/tB";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate");
+        picto = RelicRecoveryVuMark.from(relicTemplate);
+
+        relicTrackables.activate();
+
+
+        switch (picto) {
+            case LEFT: {
+                telemetry.addData("VuMark", "is Left");
+                break;
+            }
+            case RIGHT: {
+                telemetry.addData("VuMark", "is Right");
+                break;
+            }
+            case CENTER: {
+                telemetry.addData("VuMark", "is Center");
+                break;
+            }
+            case UNKNOWN: {
+                telemetry.addData("VuMark", "not visible");
+                break;
+            }
+        }
+        telemetry.update();
+        return picto;
+    }
+
 }
