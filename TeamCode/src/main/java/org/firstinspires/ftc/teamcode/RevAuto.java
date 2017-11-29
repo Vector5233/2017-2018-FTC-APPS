@@ -18,16 +18,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class RevAuto extends LinearOpMode {
 
-    DcMotor frontLeft = null;
-    DcMotor liftMotor = null;
-    DcMotor frontRight = null;
-    DcMotor backLeft = null;
-    DcMotor backRight = null;
-    ColorSensor colorSensor = null;
+    DcMotor frontLeft, frontRight, backLeft, backRight, liftMotor;
+    ColorSensor colorSensor;
     float red, green, blue;
-    Servo leftGrab, rightGrab = null;
-    Servo jewelKnocker = null;
+    Servo leftGrab, rightGrab;
+    Servo jewelKnocker;
     Drive drive;
+    RaymondAutonomousOpMode ray;
 
     float Lt, Rt;
     final double RIGHTGrab_OPEN = 1.0;
@@ -101,207 +98,20 @@ public class RevAuto extends LinearOpMode {
             idle();
         }
 
-        drive = new Drive(frontLeft,frontRight,backLeft,backRight, gyro, this);
-
+        drive = new Drive(frontLeft,frontRight,backLeft,backRight, gyro, leftGrab, rightGrab, this);
+        ray = new RaymondAutonomousOpMode (drive, jewelKnocker, colorSensor, this);
 
 
     }
-
-   /* public void TurnLeftDegree(double power, double degree) throws InterruptedException {
-        double target = gyro.getIntegratedZValue() + degree;
-        frontLeft.setPower(-power);
-        frontRight.setPower(power);
-        backLeft.setPower(-power);
-        backRight.setPower(power);
-
-    }
-
-    public void TurnRightDegree(double power, double degree) throws InterruptedException {
-
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
-    }
-
-    public void StrafeRightDistance(double power, double distance){
-// distance in inches
-        //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
-        int ticks = (int)(distance * TICKS_PER_INCH);
-        if (power>0.65){power = 0.65;}
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(-ticks);
-        backLeft.setTargetPosition(-ticks);
-        backRight.setTargetPosition(ticks);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while (frontRight.isBusy() &&frontLeft.isBusy());
-
-        StopDriving();
-    }
-    public void StrafeLeftDistance(double power, double distance){
-// distance in inches
-        //conjecture instead of moving 12", wheels will go 12"*cos(45)= 8.5"
-        int ticks = (int)(distance * TICKS_PER_INCH);
-        if (power>0.65){power = 0.65;}
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setTargetPosition(-ticks);
-        frontRight.setTargetPosition(ticks);
-        backLeft.setTargetPosition(ticks);
-        backRight.setTargetPosition(-ticks);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while (frontRight.isBusy() &&frontLeft.isBusy());
-
-        StopDriving();
-    }
-
-
-    public void DriveForwardDistance (double power, double distance){
-        // distance in inches
-        //FR,FL,BR,BL, Back motors are slower to stop
-        int ticks = (int)(distance * TICKS_PER_INCH);
-        if (power>0.65){power = 0.65;}
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(ticks);
-        backRight.setTargetPosition(ticks);
-        backLeft.setTargetPosition(ticks);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while (frontRight.isBusy() &&frontLeft.isBusy());
-
-        StopDriving();
-    }
-
-    public void DriveForwardAlternate(double power, double distance) {
-        int ticks = (int) (distance * TICKS_PER_INCH);
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while (frontLeft.getCurrentPosition() <= ticks  && opModeIsActive()) {
-            idle();
-        }
-
-        StopDriving();
-
-    }
-
-    public void DriveBackwardDistance(double power, double distance) throws InterruptedException {
-// distance in inches
-        int ticks = (int)(distance * TICKS_PER_INCH);
-        if (power>0.65){power = 0.65;}
-
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setTargetPosition(-ticks);
-        frontRight.setTargetPosition(-ticks);
-        backLeft.setTargetPosition(-ticks);
-        backRight.setTargetPosition(-ticks);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        while (frontRight.isBusy() &&frontLeft.isBusy());
-
-        StopDriving();
-    }
-
-    public void StopDriving(){
-
-        frontLeft.setPower(0.0);
-        frontRight.setPower(0.0);
-        backLeft.setPower(0.0);
-        backRight.setPower(0.0);
-    }
-
-    public void DriveForward (double power) throws InterruptedException {
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-    }*/
-
 
     public void LowerJewelKnocker(){
-
         jewelKnocker.setPosition(JEWEL_DOWN);
-
     }
 
     public void RaiseJewelKnocker(){
         jewelKnocker.setPosition(JEWEL_UP);
 
     }
-
-
-
-
 }
 
 

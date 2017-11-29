@@ -49,24 +49,24 @@ import org.firstinspires.ftc.teamcode.Drive;
 public class BlueLeft extends LinearOpMode {
     public static final String TAG = "Vuforia VuMark Sample";
 
-    DcMotor frontLeft = null;
-    DcMotor liftMotor = null;
-    DcMotor frontRight = null;
-    DcMotor backLeft = null;
-    DcMotor backRight = null;
-    ColorSensor colorSensor = null;
+    DcMotor frontLeft, frontRight, backLeft, backRight, liftMotor;
+    Servo jewelKnocker, leftGrab, rightGrab;
+    ModernRoboticsI2cGyro gyro;
+    LinearOpMode opmode;
+    ColorSensor colorSensor;
     float red, green, blue;
-    Servo leftGrab, rightGrab = null;
-    Servo jewelKnocker = null;
     Drive drive;
     RaymondAutonomousOpMode ray;
-    ModernRoboticsI2cGyro gyro;
+
 
     float Lt, Rt;
     final double RIGHTGrab_OPEN = 1.0;
     final double RIGHTGrab_CLOSE = 0.4; //used to be 0.46
     final double LEFTGrab_OPEN = 0;
-    final double LEFTGrab_CLOSE = 0.6; //used to be 0.54
+    final double LEFTGrab_CLOSE = 0.6; //us
+
+
+    // ed to be 0.54
     final double SPROCKET_RATIO = 2.0/3.0;
     final double TICKS_PER_INCH = SPROCKET_RATIO*(1120.0/(2*2*3.14159));
 
@@ -99,11 +99,13 @@ public class BlueLeft extends LinearOpMode {
         telemetry.update();
         initialization();
         waitForStart();
+        relicTrackables.activate();
         rightGrab.setPosition(RIGHTGrab_CLOSE);
         leftGrab.setPosition(LEFTGrab_CLOSE);
         liftMotor.setPower(1.0);
+        sleep (100);
+        liftMotor.setPower(0.0);
         ray. JewelKnocker();
-        relicTrackables.activate();
 
         while (opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -179,5 +181,6 @@ public class BlueLeft extends LinearOpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         drive = new Drive(frontLeft,frontRight,backLeft,backRight, gyro, leftGrab, rightGrab, this);
+        ray = new RaymondAutonomousOpMode (drive, jewelKnocker, colorSensor, this);
     }
 }

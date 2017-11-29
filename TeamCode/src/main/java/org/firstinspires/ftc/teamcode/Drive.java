@@ -16,7 +16,7 @@ public class Drive extends Object {
     Servo jewelKnocker, leftGrab, rightGrab;
     ModernRoboticsI2cGyro gyro;
     LinearOpMode opmode;
-    ColorSensor colorSensor = null;
+    ColorSensor colorSensor;
     float red, green, blue;
 
     final double SPROCKET_RATIO = 2.0/3.0;
